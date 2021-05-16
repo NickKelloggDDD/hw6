@@ -28,20 +28,51 @@ exports.handler = async function(event) {
       body: `Nope!` // a string of data
     }
   }
+  
+  
   else {
     let returnValue = {
       numResults: 0,
       movies: []
+      
     }
 
+    
+
     for (let i=0; i < moviesFromCsv.length; i++) {
+      
+      //store each movie in the memory
+      let movie = moviesFromCsv[i]
+           
+        //check if movie parameters equal queryStringParameters and ignore any results with no genre or movies with no runtime 
+        if (movie.genres.includes(genre) && movie.startYear == year && movie.genres != '\\N' && movie.runtimeMinutes != '\\N') {
+        
+
+          //populate movies' objects
+          let amovie = {
+            moviesTitle: movie.primaryTitle, 
+            moviesYear: movie.startYear, 
+            moviesGenre: movie.genres
+          }
+
+          //push to the return object array
+          returnValue.movies.push(amovie)
+
+          
+          //movie result counter
+          returnValue.numResults = returnValue.numResults + 1
+        }
+
+     
+
+           
 
     }
 
     // a lambda function returns a status code and a string of data
     return {
       statusCode: 200, // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-      body: `Hello from the back-end!` // a string of data
+      body: JSON.stringify(returnValue) // a string of data
     }
   }
 }
